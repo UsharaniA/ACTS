@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Image with Pins and Tooltips</title>
+    <style>
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .map-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+        }
+        img {
+            width: 100%;
+            height: auto;
+        }
+        .pin {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: red;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+        }
+        .tooltip {
+            display: none;
+            position: absolute;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 5px;
+            border-radius: 5px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Interactive Map with Pins and Comments</h1>
+            <h1>Interactive Image with Pins and Tooltips</h1>
+        </header>
+        <div class="map-container">
+            <img src="2ndmission.jpg" alt="Interactive Map" id="interactive-image">
+            <div class="pin" style="top: 20%; left: 40%;" data-comment="Share the details here"></div>
+        </div>
+        <div id="tooltip" class="tooltip"></div>
+        <footer>
+            <p>© 2024 Interactive Map</p>
+        </footer>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const imageContainer = document.querySelector('.map-container');
+            const pinsData = [
+                { x: 632, y: 240, comment: 'Share the details here' },
+                // Add more pin data as needed
+            ];
+            
+            pinsData.forEach(pinData => {
+                const pin = document.createElement('div');
+                pin.classList.add('pin');
+                pin.setAttribute('data-comment', pinData.comment);
+                imageContainer.appendChild(pin);
+
+                setPinPosition(pin, pinData.x, pinData.y);
+
+                pin.addEventListener('mouseenter', (event) => {
+                    showTooltip(event.target);
+                });
+
+                pin.addEventListener('mouseleave', () => {
+                    hideTooltip();
+                });
+            });
+        });
+
+        function setPinPosition(pin, pixelX, pixelY) {
+            const img = document.getElementById('interactive-image');
+
+            const imgWidth = img.naturalWidth;
+            const imgHeight = img.naturalHeight;
+
+            const percentX = (pixelX / imgWidth) * 100;
+            const percentY = (pixelY / imgHeight) * 100;
+
+            pin.style.left = percentX + '%';
+            pin.style.top = percentY + '%';
+        }
+
+        function showTooltip(pin) {
+            const tooltip = document.getElementById('tooltip');
+
+            const comment = pin.getAttribute('data-comment');
+            tooltip.textContent = comment;
+
+            const rect = pin.getBoundingClientRect();
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+
+            tooltip.style.left = rect.left + scrollLeft + 'px';
+            tooltip.style.top = rect.top + scrollTop - tooltip.offsetHeight - 10 + 'px';
+            tooltip.style.display = 'block';
+        }
+
+        function hideTooltip() {
+            const tooltip = document.getElementById('tooltip');
+            tooltip.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
